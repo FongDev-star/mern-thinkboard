@@ -14,7 +14,7 @@ const __dirname = path.resolve();
 
 // middleware
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "development") {
   app.use(
     cors({
       origin: "http://localhost:5173",
@@ -33,7 +33,7 @@ app.use(rateLimiter);
 
 app.use("/api/notes", noteRoute);
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "development") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
