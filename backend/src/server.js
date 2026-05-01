@@ -16,25 +16,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-if (process.env.NODE_ENV === "development") {
-  app.use(cors({ origin: "http://localhost:5173" }));
-}
-
+// middleware
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(rateLimiter);
+
 app.use("/api/notes", noteRoute);
 
-if (process.env.NODE_ENV !== "development") {
-  const frontendPath = path.join(__dirname, "../../frontend/dist");
-  console.log("__dirname:", __dirname);
-  console.log("Frontend path:", frontendPath);
-  console.log("Path exists:", fs.existsSync(frontendPath));
+// serve frontend
+const frontendPath = path.join(__dirname, "../../frontend/dist");
+console.log("__dirname:", __dirname);
+console.log("Frontend path:", frontendPath);
+console.log("Path exists:", fs.existsSync(frontendPath));
 
-  app.use(express.static(frontendPath));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-  });
-}
+app.use(express.static(frontendPath));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 connectDB().then(() => {
   app.listen(PORT, () => {
