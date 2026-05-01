@@ -6,20 +6,22 @@ import rateLimiter from "./middleware/rateLimiter.js";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = process.env.PORT || 5001;
-const __dirname = path.resolve();
 
 // middleware
-
 if (process.env.NODE_ENV === "development") {
   app.use(
     cors({
       origin: "http://localhost:5173",
-    }),
+    })
   );
 }
 
@@ -29,14 +31,14 @@ app.use(rateLimiter);
 app.use("/api/notes", noteRoute);
 
 if (process.env.NODE_ENV !== "development") {
-  // Add this just before your static file serving block
   const frontendPath = path.join(__dirname, "../../frontend/dist");
   console.log("__dirname:", __dirname);
   console.log("Frontend path:", frontendPath);
   console.log("Path exists:", fs.existsSync(frontendPath));
-  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+
+  app.use(express.static(frontendPath));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
+    res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
 
