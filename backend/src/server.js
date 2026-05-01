@@ -16,18 +16,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// middleware
 if (process.env.NODE_ENV === "development") {
-  app.use(
-    cors({
-      origin: "http://localhost:5173",
-    })
-  );
+  app.use(cors({ origin: "http://localhost:5173" }));
 }
 
 app.use(express.json());
 app.use(rateLimiter);
-
 app.use("/api/notes", noteRoute);
 
 if (process.env.NODE_ENV !== "development") {
