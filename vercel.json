@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://mern-thinkboard-1-dk03.onrender.com"
+    }
+  ]
+}
